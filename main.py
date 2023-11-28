@@ -40,9 +40,15 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
 energy_array = []
 for frames in frames_array:
     energy_array.append(np.sum([frame**2 for frame in frames]))
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(1, 2)
 
-ax.set_title("Energy")
-ax.plot([i for i in range(0, len(energy_array))], energy_array, linewidth=2.0)
+ax[0].set_title("Energy")
+ax[0].plot([i * 0.02 for i in range(0, len(energy_array))], energy_array, linewidth=2.0)
+
+fft_frames = []
+for frames in frames_array:
+    fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
+ax[1].set_title("FFT")
+ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
 
 plt.show()
