@@ -43,12 +43,19 @@ for frames in frames_array:
 fig, ax = plt.subplots(1, 2)
 
 ax[0].set_title("Energy")
-ax[0].plot([i * 0.02 for i in range(0, len(energy_array))], energy_array, linewidth=2.0)
+ax[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
 
-fft_frames = []
+# fft_frames = []
+# for frames in frames_array:
+#     fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
+# ax[1].set_title("FFT")
+# ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
+
+zcr_array = []
 for frames in frames_array:
-    fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
-ax[1].set_title("FFT")
-ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
+    zcr_array.append((np.sum(np.abs(np.diff(np.sign(frames))))) / (2 * len(frames)))
+
+ax[1].set_title("ZCR")
+ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
 
 plt.show()
