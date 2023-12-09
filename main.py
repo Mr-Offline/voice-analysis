@@ -30,26 +30,21 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
         frames = wav_file.readframes(frames_per_frame_size)
         wav_file.setpos(wav_file.tell() - (int(frames_per_frame_size * 0.01)))
 
-        read_frames = np.frombuffer(frames, dtype=np.int32)
+        read_frames = np.frombuffer(frames, dtype=np.int16)
         hamming_frame = signal.windows.hamming(len(read_frames))
-        read_frames = np.multiply(read_frames, hamming_frame)
+        read_frames = read_frames * hamming_frame
 
         # Append the frames to the frame array
         frames_array.append(read_frames)
 
+fig, ax = plt.subplots(1, 2)
+
 energy_array = []
 for frames in frames_array:
-    energy_array.append(np.sum([frame**2 for frame in frames]))
-fig, ax = plt.subplots(1, 2)
+    energy_array.append(np.sum([frame**2 for frame in frames]) / len(frames))
 
 ax[0].set_title("Energy")
 ax[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
-
-# fft_frames = []
-# for frames in frames_array:
-#     fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
-# ax[1].set_title("FFT")
-# ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
 
 zcr_array = []
 for frames in frames_array:
@@ -57,5 +52,12 @@ for frames in frames_array:
 
 ax[1].set_title("ZCR")
 ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
+
+# fft_frames = []
+# for frames in frames_array:
+#     fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
+# ax[1].set_title("FFT")
+# ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
+
 
 plt.show()
