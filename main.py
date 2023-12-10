@@ -2,6 +2,7 @@
 import wave
 import numpy as np
 from scipy import signal
+from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 
 # Open the WAV file
@@ -37,7 +38,7 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
         # Append the frames to the frame array
         frames_array.append(read_frames)
 
-fig, ax = plt.subplots(1, 2)
+fig, ax = plt.subplots(1, 4)
 
 energy_array = []
 for frames in frames_array:
@@ -53,11 +54,19 @@ for frames in frames_array:
 ax[1].set_title("ZCR")
 ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
 
-# fft_frames = []
-# for frames in frames_array:
-#     fft_frames.append(np.sum([frame**2 for frame in np.fft.fft(frames)]))
-# ax[1].set_title("FFT")
-# ax[1].plot([i * 0.02 for i in range(0, len(fft_frames))], energy_array, linewidth=2.0)
+fft_frames = []
+for frames in frames_array:
+    fft_frames.append(np.mean(np.abs(fft(frames)[:len(frames) // 2])))
+
+ax[2].set_title("FFT")
+ax[2].plot(fft_frames, fftfreq(len(fft_frames), d=0.02), linewidth=2.0)
+
+autocorolation_array = []
+for frames in frames_array:
+    autocorolation_array.append(np.correlate(frames, frames))
+
+ax[3].set_title("Autocorolation")
+ax[3].plot(autocorolation_array, linewidth=2.0)
 
 
 plt.show()
