@@ -32,41 +32,67 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
         wav_file.setpos(wav_file.tell() - (int(frames_per_frame_size * 0.01)))
 
         read_frames = np.frombuffer(frames, dtype=np.int16)
+        read_frames = read_frames.reshape((-1, 2))
+        read_frames = np.mean(read_frames, axis=1).astype(np.int16)
+
         hamming_frame = signal.windows.hamming(len(read_frames))
         read_frames = read_frames * hamming_frame
 
         # Append the frames to the frame array
         frames_array.append(read_frames)
 
-fig, ax = plt.subplots(1, 4)
+# fig, ax = plt.subplots(1, 4)
 
-energy_array = []
-for frames in frames_array:
-    energy_array.append(np.sum([frame**2 for frame in frames]) / len(frames))
+# energy_array = []
+# for frames in frames_array:
+#     energy_array.append(np.sum([frame**2 for frame in frames]) / len(frames))
 
-ax[0].set_title("Energy")
-ax[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
+# ax[0].set_title("Energy")
+# ax[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
 
-zcr_array = []
-for frames in frames_array:
-    zcr_array.append((np.sum(np.abs(np.diff(np.sign(frames))))) / (2 * len(frames)))
+# zcr_array = []
+# for frames in frames_array:
+#     zcr_array.append((np.sum(np.abs(np.diff(np.sign(frames))))) / (2 * len(frames)))
 
-ax[1].set_title("ZCR")
-ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
+# ax[1].set_title("ZCR")
+# ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
 
-fft_frames = []
-for frames in frames_array:
-    fft_frames.append(np.mean(np.abs(fft(frames)[:len(frames) // 2])))
+# fft_frames = []
+# for frames in frames_array:
+#     fft_frames.append(np.abs(fft(frames)[:len(frames) // 2]))
 
-ax[2].set_title("FFT")
-ax[2].plot(fft_frames, fftfreq(len(fft_frames), d=0.02), linewidth=2.0)
+# ax[2].set_title("FFT")
+# ax[2].plot(fft_frames, fftfreq(len(fft_frames), d=0.02), linewidth=2.0)
 
-autocorolation_array = []
-for frames in frames_array:
-    autocorolation_array.append(np.correlate(frames, frames))
+# autocorolation_array = []
+# for frames in frames_array:
+#     autocorolation_array.append(np.correlate(frames, frames))
+
+# ax[3].set_title("Autocorolation")
+# ax[3].plot(autocorolation_array, linewidth=2.0)
+
+fig, ax = plt.subplots(1, 6)
+
+selected_frame_number = 25 # 0.5s
+selected_frame = frames_array[selected_frame_number]
+
+ax[0].set_title("Signal")
+ax[0].plot(selected_frame, linewidth=2.0)
+
+ax[1].set_title("Energy")
+ax[1].plot([data ** 2 for data in selected_frame], linewidth=2.0)
+
+ax[2].set_title("ZCR")
+ax[2].plot(np.abs(np.diff(np.sign(selected_frame))) / (len(selected_frame * 2)), linewidth=2.0)
 
 ax[3].set_title("Autocorolation")
-ax[3].plot(autocorolation_array, linewidth=2.0)
+ax[3].plot(np.correlate(selected_frame, selected_frame, mode='full'), linewidth=2.0)
 
+ax[4].set_title("FFT")
+ax[4].plot(fftfreq(len(selected_frame), 1 / frame_rate), np.abs(fft(selected_frame)[:len(selected_frame // 2)]), linewidth=2.0)
+
+# cepstral
+cepstral = np.real(np.fft.ifft(np.log(np.abs(np.fft.fft(selected_frame)))))
+ax[5].plot(cepstral, linewidth=2.0)
 
 plt.show()
