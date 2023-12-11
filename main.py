@@ -83,7 +83,7 @@ ax[1].set_title("Energy")
 ax[1].plot([data ** 2 for data in selected_frame], linewidth=2.0)
 
 ax[2].set_title("ZCR")
-ax[2].plot(np.abs(np.diff(np.sign(selected_frame))) / (len(selected_frame * 2)), linewidth=2.0)
+ax[2].plot(np.diff(np.sign(selected_frame)) / len(selected_frame), linewidth=2.0)
 
 ax[3].set_title("Autocorolation")
 ax[3].plot(np.correlate(selected_frame, selected_frame, mode='full'), linewidth=2.0)
