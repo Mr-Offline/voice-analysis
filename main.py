@@ -2,7 +2,7 @@
 import wave
 import numpy as np
 from scipy import signal
-from scipy.fft import fft, fftfreq
+from scipy.fft import fft, fftfreq, ifft
 import matplotlib.pyplot as plt
 
 # Open the WAV file
@@ -92,7 +92,8 @@ ax[4].set_title("FFT")
 ax[4].plot(fftfreq(len(selected_frame), 1 / frame_rate), np.abs(fft(selected_frame)[:len(selected_frame // 2)]), linewidth=2.0)
 
 # cepstral
-cepstral = np.real(np.fft.ifft(np.log(np.abs(np.fft.fft(selected_frame)))))
+cepstral = np.real(ifft(np.log(np.abs(fft(selected_frame)))))
+ax[5].set_title("Cepstral")
 ax[5].plot(cepstral, linewidth=2.0)
 
 plt.show()
