@@ -89,8 +89,11 @@ print(sum(abs(np.diff(np.sign(selected_frame))) / 2) / len(selected_frame))
 ax[3].set_title("Autocorolation")
 ax[3].plot(np.correlate(selected_frame, selected_frame, mode='full'), linewidth=2.0)
 
+ax[4].grid(True)
 ax[4].set_title("FFT")
-ax[4].plot(fftfreq(len(selected_frame), 1 / frame_rate), np.abs(fft(selected_frame)[:len(selected_frame // 2)]), linewidth=2.0)
+ax[4].set_xlabel("Frequency (Hz)")
+ax[4].set_ylabel("Magnitude (dB)")
+ax[4].plot(10 * np.log10(np.abs(fft(selected_frame)[:len(selected_frame // 2)])), linewidth=2.0)
 
 # cepstral
 cepstral = np.real(ifft(np.log(np.abs(fft(selected_frame)))))
