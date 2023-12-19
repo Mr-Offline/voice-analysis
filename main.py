@@ -71,7 +71,9 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
 # ax[3].set_title("Autocorolation")
 # ax[3].plot(autocorolation_array, linewidth=2.0)
 
-fig, ax = plt.subplots(1, 6)
+fig, ax = plt.subplots(1, 3)
+
+fig1, ax1 = plt.subplots()
 
 selected_frame_number = 25 # 0.5s
 selected_frame = frames_array[selected_frame_number]
@@ -79,25 +81,22 @@ selected_frame = frames_array[selected_frame_number]
 ax[0].set_title("Signal")
 ax[0].plot(selected_frame, linewidth=2.0)
 
-ax[1].set_title("Energy")
-ax[1].plot([data ** 2 for data in selected_frame], linewidth=2.0)
+print(f"Selected frame energy: {sum([data ** 2 for data in selected_frame]) / len(selected_frame)}")
 
-ax[2].set_title("ZCR")
-ax[2].plot(abs(np.diff(np.sign(selected_frame))) / 2, linewidth=2.0)
-print(sum(abs(np.diff(np.sign(selected_frame))) / 2) / len(selected_frame))
+print(f"Selected frame ZCR: {sum(abs(np.diff(np.sign(selected_frame))) / 2) / len(selected_frame)}")
 
-ax[3].set_title("Autocorolation")
-ax[3].plot(np.correlate(selected_frame, selected_frame, mode='full'), linewidth=2.0)
+ax[1].set_title("Autocorolation")
+ax[1].plot(np.correlate(selected_frame, selected_frame, mode='full'), linewidth=2.0)
 
-ax[4].grid(True)
-ax[4].set_title("FFT")
-ax[4].set_xlabel("Frequency (Hz)")
-ax[4].set_ylabel("Magnitude (dB)")
-ax[4].plot(10 * np.log10(np.abs(fft(selected_frame)[:len(selected_frame // 2)])), linewidth=2.0)
+ax1.grid(True)
+ax1.set_title("FFT")
+ax1.set_xlabel("Frequency (Hz)")
+ax1.set_ylabel("Magnitude (dB)")
+ax1.plot(10 * np.log10(np.abs(fft(selected_frame)[:len(selected_frame // 2)])), linewidth=2.0)
 
 # cepstral
-cepstral = np.real(ifft(np.log(np.abs(fft(selected_frame)))))
-ax[5].set_title("Cepstral")
-ax[5].plot(cepstral, linewidth=2.0)
+cepstral = np.real(ifft(np.log10(np.abs(fft(selected_frame)))))
+ax[2].set_title("Cepstral")
+ax[2].plot(cepstral, linewidth=2.0)
 
 plt.show()
