@@ -71,9 +71,13 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
 # ax[3].set_title("Autocorolation")
 # ax[3].plot(autocorolation_array, linewidth=2.0)
 
-fig, ax = plt.subplots(1, 3)
+fig, ax = plt.subplots(1, 2)
 
 fig1, ax1 = plt.subplots()
+
+fig2, ax2 = plt.subplots()
+
+fig3, ax3 = plt.subplots()
 
 selected_frame_number = 25 # 0.5s
 selected_frame = frames_array[selected_frame_number]
@@ -96,7 +100,12 @@ ax1.plot(10 * np.log10(np.abs(fft(selected_frame)[:len(selected_frame // 2)])), 
 
 # cepstral
 cepstral = np.real(ifft(np.log10(np.abs(fft(selected_frame)))))
-ax[2].set_title("Cepstral")
-ax[2].plot(cepstral, linewidth=2.0)
+ax2.set_title("Cepstral")
+ax2.plot(cepstral, linewidth=2.0)
+
+# amdf
+amdf = [np.sum(np.abs(selected_frame - np.roll(selected_frame, i))) / len(selected_frame) for i in range(len(selected_frame))]
+ax3.set_title("AMDF")
+ax3.plot(amdf, linewidth=2.0)
 
 plt.show()
