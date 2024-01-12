@@ -81,7 +81,7 @@ fig2, ax2 = plt.subplots()
 
 fig3, ax3 = plt.subplots()
 
-selected_frame_number = 25 # 0.5s
+selected_frame_number = 102 # 2.05s
 selected_frame = frames_array[selected_frame_number]
 
 ax[0].set_title("Signal")
