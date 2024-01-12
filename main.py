@@ -43,19 +43,21 @@ with wave.open('./Recording.wav', 'rb') as wav_file:
 
 # fig, ax = plt.subplots(1, 4)
 
-# energy_array = []
-# for frames in frames_array:
-#     energy_array.append(np.sum([frame**2 for frame in frames]) / len(frames))
+fig4, ax4 = plt.subplots(1, 2)
 
-# ax[0].set_title("Energy")
-# ax[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
+energy_array = []
+for frames in frames_array:
+    energy_array.append(np.sum([frame**2 for frame in frames]) / len(frames))
 
-# zcr_array = []
-# for frames in frames_array:
-#     zcr_array.append((np.sum(np.abs(np.diff(np.sign(frames))))) / (2 * len(frames)))
+ax4[0].set_title("Energy")
+ax4[0].plot([i * 0.02 for i in range(1, len(energy_array) + 1)], energy_array, linewidth=2.0)
 
-# ax[1].set_title("ZCR")
-# ax[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
+zcr_array = []
+for frames in frames_array:
+    zcr_array.append((np.sum(np.abs(np.diff(np.sign(frames))))) / (2 * len(frames)))
+
+ax4[1].set_title("ZCR")
+ax4[1].plot([i * 0.02 for i in range(1, len(zcr_array) + 1)], zcr_array, linewidth=2.0)
 
 # fft_frames = []
 # for frames in frames_array:
