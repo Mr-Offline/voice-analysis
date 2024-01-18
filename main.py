@@ -2,7 +2,7 @@
 import wave
 import numpy as np
 from scipy import signal
-from scipy.fft import fft, fftfreq, ifft
+from scipy.fft import fft, ifft
 import matplotlib.pyplot as plt
 
 # Open the WAV file
